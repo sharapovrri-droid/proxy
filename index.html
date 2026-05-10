@@ -9,13 +9,16 @@
 
 <iframe
 id="frame"
-src="https://mtproto.ru/personal.php"
 style="width:100vw;height:100vh;border:none">
 </iframe>
 
 <script>
 
 let switched = false;
+
+// Загружаем основной прокси без кэша
+document.getElementById('frame').src =
+'https://mtproto.ru/personal.php?t=' + Date.now();
 
 function tryOpen() {
 
@@ -24,6 +27,7 @@ function tryOpen() {
         let frame = document.getElementById('frame');
         let doc = frame.contentWindow.document;
 
+        // Ищем tg:// ссылку
         let tg = [...doc.links].find(a =>
             a.href.startsWith('tg://')
         );
@@ -45,7 +49,7 @@ function tryOpen() {
 // Проверяем каждую секунду
 setInterval(tryOpen, 1000);
 
-// Через 5 сек переключаемся на сторонний
+// Через 6 секунд открываем сторонние прокси
 setTimeout(() => {
 
     if (!switched) {
@@ -53,7 +57,7 @@ setTimeout(() => {
         switched = true;
 
         document.getElementById('frame').src =
-        'https://mtproto.ru/example-other.php';
+        'https://mtproto.ru/example-other.php?t=' + Date.now();
     }
 
 }, 6000);
