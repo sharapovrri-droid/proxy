@@ -2,34 +2,31 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Telegram Proxy</title>
+<title>MTProto Auto</title>
 </head>
+
 <body>
 
-<p>Открываем Telegram...</p>
+<iframe
+    id="frame"
+    src="https://mtproto.ru/personal.php"
+    style="position:fixed;top:0;left:0;width:100%;height:100%;border:none;">
+</iframe>
 
 <script>
-async function openProxy() {
+setInterval(() => {
     try {
-        const r = await fetch('https://mtproto.ru/personal.php');
-        const t = await r.text();
+        let frame = document.getElementById('frame');
+        let links = frame.contentWindow.document.links;
 
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(t, 'text/html');
-
-        const link = [...doc.links].find(a => a.href.startsWith('tg://'));
-
-        if (link) {
-            window.location.href = link.href;
-        } else {
-            document.body.innerHTML = 'Прокси не найден';
+        for (let a of links) {
+            if (a.href.startsWith('tg://')) {
+                window.location.href = a.href;
+                break;
+            }
         }
-    } catch(e) {
-        document.body.innerHTML = 'Ошибка';
-    }
-}
-
-openProxy();
+    } catch(e) {}
+}, 1000);
 </script>
 
 </body>
