@@ -5,52 +5,58 @@
 <title>MTProto Auto</title>
 </head>
 
-<body>
+<body style="margin:0">
 
 <iframe
-    id="frame"
-    src="https://mtproto.ru/personal.php"
-    style="position:fixed;top:0;left:0;width:100%;height:100%;border:none;">
+id="frame"
+src="https://mtproto.ru/personal.php"
+style="width:100vw;height:100vh;border:none">
 </iframe>
 
 <script>
 
 let switched = false;
 
-function checkProxy() {
+function tryOpen() {
 
     try {
 
         let frame = document.getElementById('frame');
         let doc = frame.contentWindow.document;
 
-        // Ищем tg:// ссылку
-        for (let a of doc.links) {
+        let tg = [...doc.links].find(a =>
+            a.href.startsWith('tg://')
+        );
 
-            if (a.href.startsWith('tg://')) {
+        if (tg) {
 
-                window.location.href = a.href;
-                return;
-            }
-        }
+            tg.click();
 
-        // Если прокси нет
-        if (
-            !switched &&
-            doc.body.innerText.includes('Свободных серверов')
-        ) {
+            setTimeout(()=>{
+                window.location = tg.href;
+            },300);
 
-            switched = true;
-
-            frame.src =
-                'https://mtproto.ru/example-other.php';
         }
 
     } catch(e) {}
 
 }
 
-setInterval(checkProxy, 1000);
+// Проверяем каждую секунду
+setInterval(tryOpen, 1000);
+
+// Через 5 сек переключаемся на сторонний
+setTimeout(() => {
+
+    if (!switched) {
+
+        switched = true;
+
+        document.getElementById('frame').src =
+        'https://mtproto.ru/example-other.php';
+    }
+
+}, 5000);
 
 </script>
 
