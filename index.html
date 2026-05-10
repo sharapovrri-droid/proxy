@@ -14,19 +14,44 @@
 </iframe>
 
 <script>
-setInterval(() => {
-    try {
-        let frame = document.getElementById('frame');
-        let links = frame.contentWindow.document.links;
 
-        for (let a of links) {
+let switched = false;
+
+function checkProxy() {
+
+    try {
+
+        let frame = document.getElementById('frame');
+        let doc = frame.contentWindow.document;
+
+        // Ищем tg:// ссылку
+        for (let a of doc.links) {
+
             if (a.href.startsWith('tg://')) {
+
                 window.location.href = a.href;
-                break;
+                return;
             }
         }
+
+        // Если прокси нет
+        if (
+            !switched &&
+            doc.body.innerText.includes('Свободных серверов')
+        ) {
+
+            switched = true;
+
+            frame.src =
+                'https://mtproto.ru/example-other.php';
+        }
+
     } catch(e) {}
-}, 1000);
+
+}
+
+setInterval(checkProxy, 1000);
+
 </script>
 
 </body>
