@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Telegram Proxy</title>
+</head>
+<body>
+
+<p>Открываем Telegram...</p>
+
+<script>
+async function openProxy() {
+    try {
+        const r = await fetch('https://mtproto.ru/personal.php');
+        const t = await r.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(t, 'text/html');
+
+        const link = [...doc.links].find(a => a.href.startsWith('tg://'));
+
+        if (link) {
+            window.location.href = link.href;
+        } else {
+            document.body.innerHTML = 'Прокси не найден';
+        }
+    } catch(e) {
+        document.body.innerHTML = 'Ошибка';
+    }
+}
+
+openProxy();
+</script>
+
+</body>
+</html>
